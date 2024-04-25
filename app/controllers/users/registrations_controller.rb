@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Users::RegistrationsController < Devise::RegistrationsController
+  include RackSessionFix
   respond_to :json
   # before_action :configure_sign_up_params, only: [:create]
   # before_action :configure_account_update_params, only: [:update]
@@ -11,9 +12,14 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # end
 
   # POST /resource
-  # def create
-  #   super
-  # end
+  def create
+    Rails.logger.debug "Received params: #{params.inspect}"
+    super do |resource|
+      if resource.errors.any?
+        logger.info "Inscription échouée : #{resource.errors.full_messages.join(", ")}"
+      end
+    end
+  end
 
   # GET /resource/edit
   # def edit
@@ -43,7 +49,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   # If you have extra params to permit, append them to the sanitizer.
   # def configure_sign_up_params
-  #   devise_parameter_sanitizer.permit(:sign_up, keys: [:attribute])
+  #   devise_parameter_sanitizer.permit(:sign_up, keys: [:email, :password, :password_confirmation])
   # end
 
   # If you have extra params to permit, append them to the sanitizer.
@@ -60,4 +66,23 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # def after_inactive_sign_up_path_for(resource)
   #   super(resource)
   # end
+
+  private
+
+  def respond_with(resource, _opts= {})
+    if resource.persisted?
+      render json: {
+        status: {code: 200, message: 'Signed up sucessfully.'},
+        data: UserSerializer.new(resource).serializable_hash[:data][:attributes]
+      }
+    else
+      error_message = "User couldn't be created successfully: #{resource.errors.full_messages.to_sentence}"
+      puts error_message # Affiche un message dans la console Rails
+      Rails.logger.debug error_message # Écrit un message de débogage dans les logs de l'application
+
+      render json: {
+        status: {code: 422, message: "User couldn't be created successfully #{resource.errors.full_messages.to_sentence}"}
+      }, status: :unprocessable_entity
+    end
+  end
 end
