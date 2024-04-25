@@ -46,7 +46,10 @@ group :development do
   # gem "spring"
 end
 
+group :test do
+  gem "rspec-rails", "~> 6.1"
+end
+
 gem 'devise'
 gem 'devise-jwt'
 gem 'jsonapi-serializer'
-
