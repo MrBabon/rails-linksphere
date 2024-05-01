@@ -1,0 +1,2 @@
+class UserContactGroupsController < ApplicationController
+end
