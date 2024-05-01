@@ -1,0 +1,26 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: linksphere_development
+      POSTGRES_USER: linksphere
+
+  web:
+    build: .
+    command: bundle exec rails s -p 3000 -b '0.0.0.0'
+    volumes:
+      - .:/monapp
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://linksphere:password@db/linksphere_development
+      CLOUDINARY_URL: cloudinary://778482897186296:0vL8YnrbgXMbp9icRUBnGB967VQ@dilp6xqmb
+
+volumes:
+  postgres_data:
