@@ -2,9 +2,15 @@ class Event < ApplicationRecord
   belongs_to :entreprise
   has_many :participations, dependent: :destroy
   has_many :exhibitors, dependent: :destroy
-  has_many :contact_entreprises, dependent: :destroy
+  # has_many :contact_entreprises, dependent: :destroy
   validates :registration_code, presence: true
 
+  has_one_attached :logo
+  def logo_url
+    if logo.attached?
+      "https://res.cloudinary.com/#{ENV['CLOUDINARY_CLOUD_NAME']}/image/upload/#{Rails.env}/#{logo.key}"
+    end
+  end
   # PG SEARCH
   include PgSearch::Model
   pg_search_scope :search_by_title,

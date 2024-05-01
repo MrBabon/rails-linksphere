@@ -19,4 +19,12 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :events, only: [:index, :show] do
+    member do
+      get 'visitor'
+      get 'exposant'
+    end
+    resources :participations, only: [:create, :destroy, :update]
+  end
+
 end
