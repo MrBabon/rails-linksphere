@@ -113,6 +113,7 @@ GEM
       multipart-post (~> 2)
     faraday-net_http (3.1.0)
       net-http
+    geocoder (1.8.2)
     globalid (1.2.1)
       activesupport (>= 6.1)
     i18n (1.14.4)
@@ -267,6 +268,7 @@ DEPENDENCIES
   devise
   devise-jwt
   dotenv-rails
+  geocoder
   jsonapi-serializer
   pg (~> 1.1)
   pg_search
