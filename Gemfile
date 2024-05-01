@@ -57,4 +57,5 @@ gem 'jsonapi-serializer'
 gem 'pundit'
 gem 'phonelib'
 gem "cloudinary"
+gem "pg_search"
 

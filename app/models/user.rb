@@ -53,6 +53,13 @@ class User < ApplicationRecord
   # REPERTOIRE
   has_one :repertoire, dependent: :destroy
   
+
+  #  PG SEARCH
+  include PgSearch::Model
+  pg_search_scope :search_by_name,
+                  against: [:first_name, :last_name],
+                  using: { tsearch: { prefix: true } }
+  
   private 
 
   def create_default_repertoire
