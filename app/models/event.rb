@@ -13,22 +13,22 @@ class Event < ApplicationRecord
   end
   # PG SEARCH
   include PgSearch::Model
-  pg_search_scope :search_by_title,
-      against: :title,
+  pg_search_scope :search_by_industry,
+      against: :industry,
       using: {
       tsearch: { prefix: true } 
       }
-      pg_search_scope :search_by_city,
+  pg_search_scope :search_by_city,
       against: :city,
       using: {
       tsearch: { prefix: true } 
       }
-      pg_search_scope :search_by_country,
+  pg_search_scope :search_by_country,
       against: :country,
       using: {
       tsearch: { prefix: true } 
       }
-      pg_search_scope :search_by_region,
+  pg_search_scope :search_by_region,
       against: :region,
       using: {
       tsearch: { prefix: true } 

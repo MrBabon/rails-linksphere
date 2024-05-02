@@ -1,0 +1,21 @@
+meta {
+  name: Update
+  type: http
+  seq: 1
+}
+
+patch {
+  url: {{BASE_URL}}signup
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "user": {
+      "email": "t@t.com",
+      "first_name": "Chris",
+      "password": "123456"
+    }
+  }
+}
