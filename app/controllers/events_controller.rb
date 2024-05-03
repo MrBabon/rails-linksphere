@@ -9,6 +9,7 @@ class EventsController < ApplicationController
         events = events.search_by_country(params[:country]) if params[:country].present?
         events = events.search_by_industry(params[:industry]) if params[:industry].present?
         events = events.search_by_region(params[:region]) if params[:region].present?
+        events = events.search_by_title(params[:title]) if params[:title].present?
     
         events_by_month = events.group_by { |event| event.start_time.beginning_of_month }
         sorted_events_by_month = events_by_month.sort_by { |month, _| month }.to_h
@@ -21,4 +22,15 @@ class EventsController < ApplicationController
 
         render json: serialized_data
     end
+
+    def show
+        event = Event.find(params[:id])
+        if event
+            authorize event
+            render json: EventSerializer.new(event).serializable_hash
+        else
+            render json: { error: "Event not found" }, status: :not_found
+        end
+    end
+
 end

@@ -60,8 +60,8 @@ jeux = Event.create(
 file_play = URI.open("https://res.cloudinary.com/dilp6xqmb/image/upload/v1714567444/FIJ-2024-1024x469_crop9k.jpg")
 play = Event.create(
     title: "Festival des jeux",
-    address: "1 Bd de la Croisette",
-    city: "Cannes",
+    address: "17 Rue des Gâtines",
+    city: "Paris",
     country: "France",
     link: "www.cannesticket.com/fr",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",

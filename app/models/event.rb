@@ -33,6 +33,11 @@ class Event < ApplicationRecord
       using: {
       tsearch: { prefix: true } 
       }
+    pg_search_scope :search_by_title,
+      against: :title,
+      using: {
+      tsearch: { prefix: true } 
+      }
   
   geocoded_by :address do |obj, results|
     if geo = results.first
