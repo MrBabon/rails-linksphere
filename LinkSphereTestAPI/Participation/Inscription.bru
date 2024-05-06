@@ -1,0 +1,21 @@
+meta {
+  name: Inscription
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{BASE_URL}}events/19/participations
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "participation": {
+      "visible_in_participants": true,
+      "registration_code": "QWERTY"
+    }
+  }
+  
+}
