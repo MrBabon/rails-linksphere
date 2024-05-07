@@ -16,5 +16,8 @@ class UserPolicy < ApplicationPolicy
     user == record  # Permet à l'utilisateur de voir son propre profil uniquement
   end
 
+  def my_events?
+    user == record
+  end
 
 end

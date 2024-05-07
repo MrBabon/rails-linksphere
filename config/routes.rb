@@ -16,6 +16,7 @@ Rails.application.routes.draw do
     member do
       get 'profil'
       get 'repertoire'
+      get 'my_events'
     end
   end
 
