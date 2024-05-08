@@ -7,6 +7,4 @@ class EventSerializer
     params && params[:include_participants] == true
   }
 
-  
-
 end
