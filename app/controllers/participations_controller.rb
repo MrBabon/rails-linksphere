@@ -1,6 +1,6 @@
 class ParticipationsController < ApplicationController
     before_action :set_event, only: [:create, :destroy, :update]
-    before_action :set_participation, only: [:destroy]
+    before_action :set_participation, only: [:destroy, :update]
 
 
     def create
@@ -17,9 +17,12 @@ class ParticipationsController < ApplicationController
     end
 
     def update
-      @participation = Participation.find_by(user_id: current_user.id, event_id: @event.id)
-      visible = params[:participation][:visible_in_participants].present?
-      @participation.visible_in_participants = !visible
+      if @participation.nil?
+        return render json: { errors: ["Participation not found"] }, status: :not_found
+      end
+
+      # visible = params[:participation][:visible_in_participants].present?
+      # @participation.visible_in_participants = !visible
   
       authorize @participation
       if @participation.update(participation_params)
@@ -27,11 +30,11 @@ class ParticipationsController < ApplicationController
             message: "Your participation visibility has been updated.",
             participation: ParticipationSerializer.new(@participation).serializable_hash
         }, status: :ok
-    else
-        render json: {
-            errors: @participation.errors.full_messages
-        }, status: :unprocessable_entity
-    end
+      else
+          render json: {
+              errors: @participation.errors.full_messages
+          }, status: :unprocessable_entity
+      end
     end
 
     def destroy
