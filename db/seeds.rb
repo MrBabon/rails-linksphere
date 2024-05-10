@@ -32,6 +32,7 @@ dannacode = Entreprise.create(
 )
 dannacode.logo.attach(io: file_dannacode, filename: "dannacode.png", content_type: "image?png")
 
+file_maelcorp = URI.open("https://res.cloudinary.com/dilp6xqmb/image/upload/v1715324347/logo-maelcorp-blanc_u6vpqi.png")
 maelcorp = Entreprise.create(
     name: "MaelCorp",
     email: "mael@dannacode.com",
@@ -44,6 +45,8 @@ maelcorp = Entreprise.create(
     industry: "Technology",
     description: "Plus grande entreprise de France, vous souhaitez un site d'exeption ? C'est ici et nul part ailleurs !"
 )
+maelcorp.logo.attach(io: file_maelcorp, filename: "maelcorp.png", content_type: "image?png")
+
 jeux = Event.create(
     title: "Salon de l'agriculture",
     address: "1 Place de la Porte de Versailles",

@@ -1,4 +1,5 @@
 class EventsController < ApplicationController
+    before_action :set_event, only: [:show, :exposant, :visitor]
 
     def index
         # Utilisez policy_scope pour s'assurer que seulement les événements autorisés sont chargés
@@ -24,13 +25,56 @@ class EventsController < ApplicationController
     end
 
     def show
-        event = Event.find(params[:id])
-        if event
-            authorize event
-            render json: EventSerializer.new(event).serializable_hash
+        if @event
+            authorize @event
+            render json: EventSerializer.new(@event).serializable_hash
         else
             render json: { error: "Event not found" }, status: :not_found
         end
     end
 
+    def exposant
+        authorize @event
+        exhibitors = @event.exhibitors
+        if exhibitors
+            render json: EventSerializer.new(@event, include: [:exhibitors, 'exhibitors.entreprise']).serializable_hash
+        else
+            render json: { error: "Exhibitor not found" }, status: :not_found
+
+        end
+    end
+
+    def visitor
+        authorize @event, :visitor?
+        visible_participations = @event.participations
+                                            .where(visible_in_participants: true)
+                                            .joins(:user)
+                                            .order('users.first_name ASC')
+
+        if current_user
+            user_participation = @event.participations.find_by(user: current_user)
+      
+            # Vérifier si l'utilisateur a refusé d'être visible
+            if user_participation && !user_participation.visible_in_participants
+                Rails.logger.info "User #{current_user.id} is not visible in participants"
+                render json: { error: "You do not have access to this page. Please validate your visibility to access it." }, status: :forbidden
+                return
+            end
+
+            visible_participations = visible_participations.where.not(user_id: current_user.id)
+          else
+            Rails.logger.info "User is not authenticated"
+            render json: { error: "You must be logged in to access this page." }, status: :unauthorized
+            return
+          end
+      
+          # Utilisation du serializer pour renvoyer les participations visibles en JSON
+          render json: ParticipationSerializer.new(visible_participations, include: [:user]).serializable_hash
+    end
+
+    private
+
+    def set_event
+        @event = Event.find(params[:id])
+    end
 end

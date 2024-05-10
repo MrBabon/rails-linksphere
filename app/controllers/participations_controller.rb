@@ -20,9 +20,6 @@ class ParticipationsController < ApplicationController
       if @participation.nil?
         return render json: { errors: ["Participation not found"] }, status: :not_found
       end
-
-      # visible = params[:participation][:visible_in_participants].present?
-      # @participation.visible_in_participants = !visible
   
       authorize @participation
       if @participation.update(participation_params)

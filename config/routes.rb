@@ -26,6 +26,8 @@ Rails.application.routes.draw do
       get 'exposant'
     end
     resources :participations, only: [:create, :destroy, :update]
+    resources :exhibitors, only: [:show]
   end
+
 
 end

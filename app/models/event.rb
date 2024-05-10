@@ -56,5 +56,7 @@ class Event < ApplicationRecord
     errors.empty? 
   end
 
+  
+
 end
 

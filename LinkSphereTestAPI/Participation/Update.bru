@@ -5,7 +5,13 @@ meta {
 }
 
 patch {
-  url: {{BASE_URL}}events/20/participations/
-  body: none
+  url: {{BASE_URL}}events/23/participations/53
+  body: json
   auth: none
+}
+
+body:json {
+  {
+      "visible_in_participants": true
+  }
 }

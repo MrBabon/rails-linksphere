@@ -1,4 +1,6 @@
 class ExhibitorSerializer
   include JSONAPI::Serializer
-  attributes 
+  attributes :id, :event_id
+
+  belongs_to :entreprise, serializer: EntrepriseSerializer
 end
