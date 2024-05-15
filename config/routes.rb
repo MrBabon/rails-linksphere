@@ -29,5 +29,9 @@ Rails.application.routes.draw do
     resources :exhibitors, only: [:show]
   end
 
+  resources :entreprises, only: [:edit, :update, :show, :new, :create] do
+    
+  end
+
 
 end

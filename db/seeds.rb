@@ -31,6 +31,7 @@ dannacode = Entreprise.create(
     description: "Plus grande entreprise de France, vous souhaitez un site d'exeption ? C'est ici et nul part ailleurs !"
 )
 dannacode.logo.attach(io: file_dannacode, filename: "dannacode.png", content_type: "image?png")
+dannacode.banner.attach(io: file_dannacode, filename: "dannacodebanner.png", content_type: "image?png")
 
 file_maelcorp = URI.open("https://res.cloudinary.com/dilp6xqmb/image/upload/v1715324347/logo-maelcorp-blanc_u6vpqi.png")
 maelcorp = Entreprise.create(

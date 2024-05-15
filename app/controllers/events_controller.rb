@@ -27,7 +27,7 @@ class EventsController < ApplicationController
     def show
         if @event
             authorize @event
-            render json: EventSerializer.new(@event).serializable_hash
+            render json: EventSerializer.new(@event, { params: { current_user: current_user, include_participants: true } }).serializable_hash
         else
             render json: { error: "Event not found" }, status: :not_found
         end
@@ -37,7 +37,7 @@ class EventsController < ApplicationController
         authorize @event
         exhibitors = @event.exhibitors
         if exhibitors
-            render json: EventSerializer.new(@event, include: [:exhibitors, 'exhibitors.entreprise']).serializable_hash
+            render json: EventSerializer.new(@event, include: [:exhibitors, 'exhibitors.entreprise', :participations]).serializable_hash
         else
             render json: { error: "Exhibitor not found" }, status: :not_found
 

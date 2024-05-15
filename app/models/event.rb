@@ -1,6 +1,8 @@
 class Event < ApplicationRecord
   belongs_to :entreprise
   has_many :participations, dependent: :destroy
+  has_many :participants, through: :participations, source: :user
+
   has_many :exhibitors, dependent: :destroy
   # has_many :contact_entreprises, dependent: :destroy
   validates :registration_code, presence: true
@@ -57,6 +59,21 @@ class Event < ApplicationRecord
   end
 
   
+  # Pour voir si current_user est bien enregistrer dans l'event
+  def user_registered?(user)
+    return false if user.nil?
+    registered = participations.exists?(user: user)
+    Rails.logger.debug "User #{user.id} registered for Event #{id}: #{registered}"
+    registered
+  end
+
+  def user_visible_in_participants?(user)
+    return false if user.nil?
+    participation = participations.find_by(user: user)
+    visible = participation.present? && participation.visible_in_participants
+    Rails.logger.debug "User #{user.id} visible in participants for Event #{id}: #{visible}"
+    visible
+  end
 
 end
 

@@ -5,4 +5,7 @@ class EntrepriseSerializer
   :phone, :establishment, :legal_status, :latitude, :longitude, 
   :country, :city, :region, :logo_url, :banner_url
   
+  has_many :employees, serializer: EmployeeSerializer
+  has_many :entrepreneurs, serializer: EntrepreneurSerializer
+  
 end
