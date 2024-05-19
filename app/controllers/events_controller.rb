@@ -62,14 +62,16 @@ class EventsController < ApplicationController
             end
 
             visible_participations = visible_participations.where.not(user_id: current_user.id)
-          else
+        else
             Rails.logger.info "User is not authenticated"
             render json: { error: "You must be logged in to access this page." }, status: :unauthorized
             return
-          end
+        end
       
-          # Utilisation du serializer pour renvoyer les participations visibles en JSON
-          render json: ParticipationSerializer.new(visible_participations, include: [:user]).serializable_hash
+        render json: {
+            participations: ParticipationSerializer.new(visible_participations, include: [:user]).serializable_hash,
+            user_participation: user_participation ? ParticipationSerializer.new(user_participation).serializable_hash : nil
+        }
     end
 
     private

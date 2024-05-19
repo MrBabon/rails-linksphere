@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  before_action :set_user, only: [:show]
   before_action :authenticate_user!
 
   def profil
@@ -41,12 +42,52 @@ class UsersController < ApplicationController
       events_in_month.map { |event| EventSerializer.new(event).serializable_hash }
     end
 
-
-
     render json: {
       events: serialized_events_by_month,
       visible_in_participants: visible_in_participants
     }, status: :ok
+  end
+
+  def show
+    if @user == current_user
+      render json: { message: "You are viewing your own profile", user: UserSerializer.new(@user).serializable_hash }
+      return
+    end
+
+    if @user.entrepreneurs?
+      Rails.logger.info "User is an entrepreneur"
+      @entreprise = @user.entreprises_as_owner.first
+    elsif @user.employee_relationships?
+      Rails.logger.info "User is an employee"
+      @employee = @user.entreprises_as_employee.first
+    end
+
+    @from_contact_group = session.delete(:from_contact_group)
+    blocked = current_user.blocks_given.exists?(blocked_id: @user.id) || @user.blocks_given.exists?(blocked_id: current_user.id)
+  if blocked
+    render json: { error: "You cannot view this profile." }, status: :forbidden
+    return
+  end
+  authorize @user
+
+  response = {
+    user: UserSerializer.new(@user).serializable_hash,
+    from_contact_group: @from_contact_group
+  }
+  response[:entreprise] = EntrepriseSerializer.new(@entreprise).serializable_hash if @entreprise
+  response[:employee] = EmployeeSerializer.new(@employee).serializable_hash if @employee
+
+  render json: response
+  rescue Pundit::NotAuthorizedError
+  render json: { error: "You are not authorized to view this profile." }, status: :unauthorized
+  rescue ActiveRecord::RecordNotFound
+  render json: { error: "User not found." }, status: :not_found
+  end
+
+  private 
+
+  def set_user
+    @user = User.find(params[:id])
   end
 
 end

@@ -91,6 +91,15 @@ class User < ApplicationRecord
     industry.presence || "Industry not specified"
   end
   
+
+  def entrepreneurs?
+    entreprises_as_owner.exists?
+  end
+
+  def employee_relationships?
+    entreprises_as_employee.exists?
+  end
+
   private 
 
   def create_default_repertoire
