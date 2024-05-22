@@ -4,4 +4,9 @@ class ContactGroup < ApplicationRecord
   has_many :users, through: :user_contact_groups
   
   validates :name, presence: true, length: { maximum: 11 }
+
+  def user_count
+    users.count
+  end
+  
 end
