@@ -16,19 +16,23 @@ class UsersController < ApplicationController
   def repertoire
     repertoire = current_user.repertoire
     authorize repertoire
-    @groups = repertoire.contact_groups.includes(:users)
+    @groups = repertoire.contact_groups.includes(user_contact_groups: :user)
     @everyone_group = @groups.find_by(name: "Everyone")
 
     if params[:search].present?
       search = "%#{params[:search]}%"
-      @users = @everyone_group.users.where("first_name ILIKE ? OR last_name ILIKE ?", search, search)
+      users = @everyone_group.users.where("first_name ILIKE ? OR last_name ILIKE ?", search, search)
       @search_active = true
     else
-      @users = []
+      users = []
       @search_active = false
     end
-    
-    render json: RepertoireSerializer.new(repertoire, include: [:contact_groups]).serializable_hash
+
+    render json: {
+      repertoire: RepertoireSerializer.new(repertoire, include: [:contact_groups, :'contact_groups.user_contact_groups', :'contact_groups.user_contact_groups.user']).serializable_hash,
+      users: UserSerializer.new(users, is_collection: true).serializable_hash[:data],
+      search_active: @search_active
+    }, status: :ok
   end
 
   def my_events

@@ -5,5 +5,6 @@ class ContactGroupSerializer
   attribute :user_count do |contact_group|
     contact_group.user_contact_groups.count
   end
-  
+  has_many :user_contact_groups, serializer: UserContactGroupSerializer
+
 end
