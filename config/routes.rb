@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   }
   resources :users do
     resource :repertoire, only: [] do
-      resources :contact_groups, only: [:create, :new, :edit]
+      resources :contact_groups, only: [:create, :new, :edit, :show, :destroy, :update]
     end
     member do
       get 'profil'
@@ -19,6 +19,9 @@ Rails.application.routes.draw do
       get 'my_events'
     end
   end
+
+
+
 
   resources :events, only: [:index, :show] do
     member do
