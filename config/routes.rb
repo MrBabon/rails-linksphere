@@ -11,7 +11,9 @@ Rails.application.routes.draw do
   }
   resources :users do
     resource :repertoire, only: [] do
-      resources :contact_groups, only: [:create, :new, :edit, :show, :destroy, :update]
+      resources :contact_groups, only: [:create, :new, :edit, :show, :destroy, :update] do
+        resources :user_contact_groups, only: :show
+      end
     end
     member do
       get 'profil'
