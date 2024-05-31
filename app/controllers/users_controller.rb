@@ -16,9 +16,9 @@ class UsersController < ApplicationController
   def repertoire
     repertoire = current_user.repertoire
     authorize repertoire
+    
     @groups = repertoire.contact_groups.includes(user_contact_groups: :user)
     @everyone_group = @groups.find_by(name: "Everyone")
-
     if params[:search].present?
       search = "%#{params[:search]}%"
       users = @everyone_group.users.where("first_name ILIKE ? OR last_name ILIKE ?", search, search)

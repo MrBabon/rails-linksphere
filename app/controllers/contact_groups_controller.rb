@@ -27,6 +27,19 @@ class ContactGroupsController < ApplicationController
       rescue ActiveRecord::RecordNotFound
         render json: { error: "Access denied or Contact Group not found." }, status: :not_found
     end
+
+    def create
+      @repertoire = current_user.repertoire
+      @contact_group = @repertoire.contact_groups.build(contact_group_params.merge(deletable: true))
+
+      if @contact_group.save
+        render json: @contact_group, status: :created, serializer: ContactGroupSerializer
+      else
+        render json: { errors: @contact_group.errors.full_messages }, status: :unprocessable_entity
+      end
+      authorize @contact_group, :create?
+
+    end
     
     private
 
@@ -38,5 +51,9 @@ class ContactGroupsController < ApplicationController
         else
         @contact_group = nil
         end    
+    end
+
+    def contact_group_params
+      params.require(:contact_group).permit(:name)
     end
 end

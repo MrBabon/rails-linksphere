@@ -23,6 +23,7 @@ class UserContactGroupsController < ApplicationController
     
         render json: {
           user: UserSerializer.new(@user).serializable_hash,
+          contact_group: ContactGroupSerializer.new(@contact_groups).serializable_hash,
           user_contact_group: UserContactGroupSerializer.new(@user_contact_group).serializable_hash,
           entreprise: @entreprise ? EntrepriseSerializer.new(@entreprise).serializable_hash : nil,
           employee: @employee ? EmployeeSerializer.new(@employee).serializable_hash : nil
