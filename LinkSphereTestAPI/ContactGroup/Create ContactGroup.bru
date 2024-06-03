@@ -6,6 +6,14 @@ meta {
 
 post {
   url: {{BASE_URL}}users/2/repertoire/contact_groups
-  body: none
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "contact_group": {
+      "name": "Group 1"
+  }
+  }
 }
