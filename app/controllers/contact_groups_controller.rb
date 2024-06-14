@@ -7,7 +7,7 @@ class ContactGroupsController < ApplicationController
             render json: { error: "Contact Group not found or access denied." }, status: :not_found
             return
         end
-        
+
         @users = @contact_group.users.joins(:user_contact_groups).select('users.*, user_contact_groups.created_at AS created_at').order('created_at DESC, last_name')
         if params[:search].present?
           search_term = "%#{params[:search]}%"
@@ -17,7 +17,7 @@ class ContactGroupsController < ApplicationController
           @users = @contact_group.users.order(:last_name)
           @search_active = false
         end
-    
+
         render json: {
             contact_group: ContactGroupSerializer.new(@contact_group, include: [:user_contact_groups, :'user_contact_groups.user']).serializable_hash,
             users: UserSerializer.new(@users, is_collection: true).serializable_hash[:data],
@@ -40,7 +40,17 @@ class ContactGroupsController < ApplicationController
       authorize @contact_group, :create?
 
     end
-    
+
+    def destroy
+      authorize @contact_group, :destroy?
+
+      if @contact_group.destroy
+        render json: { message: "Contact Group deleted." }, status: :ok
+      else
+        render json: { error: "Could not delete Contact Group." }, status: :unprocessable_entity
+      end
+    end
+
     private
 
     def set_contact_group
@@ -50,7 +60,7 @@ class ContactGroupsController < ApplicationController
         authorize @contact_group, :show? if @contact_group
         else
         @contact_group = nil
-        end    
+        end
     end
 
     def contact_group_params
