@@ -10,8 +10,12 @@ class UserContactGroupPolicy < ApplicationPolicy
     true
   end
 
-  def add_to_group
+  def add_to_group?
     true
   end
-  
+
+  def update?
+    true
+  end
+
 end

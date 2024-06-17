@@ -39,8 +39,13 @@ class UserContactGroupsController < ApplicationController
       @user_contact_group = UserContactGroup.find_or_initialize_by(user_id: user_id)
       authorize @user_contact_group
 
+      if UserGroup.exists?(user_contact_group: @user_contact_group, contact_group_id: group_id)
+        render json: { message: "User already in group" }, status: :ok
+        return
+      end
+
       if @user_contact_group.save
-        user_group = UserGroup.find_or_create_by(user_contact_group: @user_contact_group, contact_group_id: group_id)
+        user_group_association = UserGroup.find_or_create_by(user_contact_group: @user_contact_group, contact_group_id: group_id)
 
         render json: UserContactGroupSerializer.new(@user_contact_group).serializable_hash, status: :created
       else
@@ -50,7 +55,6 @@ class UserContactGroupsController < ApplicationController
 
     def update
       @user_contact_group = UserContactGroup.find(params[:id])
-      @user = @user_contact_group.user
       authorize @user_contact_group
 
       if @user_contact_group.update(user_contact_group_params)
