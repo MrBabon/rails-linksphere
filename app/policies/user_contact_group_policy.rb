@@ -9,4 +9,9 @@ class UserContactGroupPolicy < ApplicationPolicy
   def show?
     true
   end
+
+  def add_to_group
+    true
+  end
+  
 end

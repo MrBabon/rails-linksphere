@@ -48,20 +48,22 @@ maelcorp = Entreprise.create(
 )
 maelcorp.logo.attach(io: file_maelcorp, filename: "maelcorp.png", content_type: "image?png")
 
-jeux = Event.create(
+file_agriculture = URI.open("https://res.cloudinary.com/dilp6xqmb/image/upload/v1718630654/agriculture_pdlkgx.jpg")
+agriculture = Event.create(
     title: "Salon de l'agriculture",
     address: "1 Place de la Porte de Versailles",
     city: "Paris",
     country: "France",
     link: "www.cannesticket.com/fr",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    start_time: "2024-04-05",
-    end_time: "2024-04-07",
+    start_time: "2024-09-05",
+    end_time: "2024-09-07",
     registration_code: "QWERTY",
     entreprise: organisateur
 )
+agriculture.logo.attach(io: file_agriculture, filename: "agriculture.png", content_type: "image?png")
 
-file_play = URI.open("https://res.cloudinary.com/dilp6xqmb/image/upload/v1714567444/FIJ-2024-1024x469_crop9k.jpg")
+file_play = URI.open("https://res.cloudinary.com/dilp6xqmb/image/upload/v1715775116/development/zhc5zikalyg6u1bpn7d2rm7pf8bp.jpg")
 play = Event.create(
     title: "Festival des jeux",
     address: "17 Rue des Gâtines",
@@ -77,7 +79,7 @@ play = Event.create(
 play.logo.attach(io: file_play, filename: "festivalDuJeux.png", content_type: "image?png")
 
 
-file_film = URI.open("https://res.cloudinary.com/dilp6xqmb/image/upload/v1714565721/festival_osfy51.webp")
+file_film = URI.open("https://res.cloudinary.com/dilp6xqmb/image/upload/v1715775118/development/3phj3br58wjwag08xk3dabxewsku.webp")
 film = Event.create(
     title: "Festival de Cannes",
     address: "1 Bd de la Croisette",
@@ -93,8 +95,8 @@ film = Event.create(
 film.logo.attach(io: file_film, filename: "festival.png", content_type: "image?png")
 
 
-Exhibitor.create(entreprise: dannacode, event: jeux)
-Exhibitor.create(entreprise: maelcorp, event: jeux)
+Exhibitor.create(entreprise: dannacode, event: agriculture)
+Exhibitor.create(entreprise: maelcorp, event: agriculture)
 Exhibitor.create(entreprise: dannacode, event: play)
 Exhibitor.create(entreprise: maelcorp, event: play)
 Exhibitor.create(entreprise: dannacode, event: film)

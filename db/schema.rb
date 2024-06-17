@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_02_141709) do
+ActiveRecord::Schema[7.0].define(version: 2024_06_17_123212) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -174,12 +174,19 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_02_141709) do
 
   create_table "user_contact_groups", force: :cascade do |t|
     t.text "personal_note"
-    t.bigint "contact_group_id", null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["contact_group_id"], name: "index_user_contact_groups_on_contact_group_id"
     t.index ["user_id"], name: "index_user_contact_groups_on_user_id"
+  end
+
+  create_table "user_groups", force: :cascade do |t|
+    t.bigint "user_contact_group_id", null: false
+    t.bigint "contact_group_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["contact_group_id"], name: "index_user_groups_on_contact_group_id"
+    t.index ["user_contact_group_id"], name: "index_user_groups_on_user_contact_group_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -227,6 +234,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_02_141709) do
   add_foreign_key "participations", "events"
   add_foreign_key "participations", "users"
   add_foreign_key "repertoires", "users"
-  add_foreign_key "user_contact_groups", "contact_groups"
   add_foreign_key "user_contact_groups", "users"
+  add_foreign_key "user_groups", "contact_groups"
+  add_foreign_key "user_groups", "user_contact_groups"
 end

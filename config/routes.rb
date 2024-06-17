@@ -12,7 +12,11 @@ Rails.application.routes.draw do
   resources :users do
     resource :repertoire, only: [] do
       resources :contact_groups, only: [:create, :new, :edit, :show, :destroy, :update] do
-        resources :user_contact_groups, only: :show
+        resources :user_contact_groups, only: :show do
+          collection do
+            post 'add_to_group'
+          end
+        end
       end
     end
     member do
@@ -35,7 +39,7 @@ Rails.application.routes.draw do
   end
 
   resources :entreprises, only: [:edit, :update, :show, :new, :create] do
-    
+
   end
 
 
