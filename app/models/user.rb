@@ -111,8 +111,9 @@ class User < ApplicationRecord
     require 'rqrcode'
     require 'base64'
 
-    # URL pour ajouter cet utilisateur au répertoire
-    url = "http://192.168.1.13:3000/users/#{self.id}"
+
+    base_url = ENV['BASE_URL']
+    url = "#{base_url}/redirect?user_id=#{self.id}"
 
     # Génération du QR code
     qrcode = RQRCode::QRCode.new(url)
