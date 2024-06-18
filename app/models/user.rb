@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   after_create :create_default_repertoire
+  after_create :generate_qr_code
 
   include Devise::JWT::RevocationStrategies::JTIMatcher
   # Include default devise modules. Others available are:
@@ -8,8 +9,8 @@ class User < ApplicationRecord
          :validatable, :jwt_authenticatable, jwt_revocation_strategy: self
 
   ##################################
-  # VALIDATES USER 
-  ##################################      
+  # VALIDATES USER
+  ##################################
   validates :first_name, presence: true, length: { maximum: 17 }, format: { without: /\s/ }
   validates :last_name, presence: true, length: { maximum: 20 }, format: { without: /\s/ }
   validates :phone, phone: { message: I18n.t('errors.messages.invalid_phone_number') }
@@ -40,7 +41,7 @@ class User < ApplicationRecord
   validates :industry, inclusion: { in: industries.keys, message: "Industry invalid" }, allow_blank: true
 
   ##################################
-  # ATTACHEMENT USER 
+  # ATTACHEMENT USER
   ##################################
   # AVATAR
   has_one_attached :avatar
@@ -49,10 +50,10 @@ class User < ApplicationRecord
       "https://res.cloudinary.com/#{ENV['CLOUDINARY_CLOUD_NAME']}/image/upload/#{Rails.env}/#{avatar.key}"
     end
   end
-  
+
   # REPERTOIRE
   has_one :repertoire, dependent: :destroy
-  
+
   # CHATROOM & MESSAGE
   has_many :messages, dependent: :destroy
   # USERS_CONTACT_GROUPS
@@ -86,11 +87,11 @@ class User < ApplicationRecord
   ##########################
   # FUNCTION USER
   ##########################
-  
+
   def industry_form_value
     industry.presence || "Industry not specified"
   end
-  
+
 
   def entrepreneurs?
     entreprises_as_owner.exists?
@@ -100,9 +101,35 @@ class User < ApplicationRecord
     entreprises_as_employee.exists?
   end
 
-  private 
+  private
 
   def create_default_repertoire
     create_repertoire!
+  end
+
+  def generate_qr_code
+    require 'rqrcode'
+    require 'base64'
+
+    # URL pour ajouter cet utilisateur au répertoire
+    url = "http://192.168.1.13:3000/users/#{self.id}"
+
+    # Génération du QR code
+    qrcode = RQRCode::QRCode.new(url)
+
+    # Convertir le QR code en image PNG
+    png = qrcode.as_png(
+      bit_depth: 1,
+      border_modules: 4,
+      color_mode: ChunkyPNG::COLOR_GRAYSCALE,
+      color: 'black',
+      fill: 'white',
+      module_px_size: 10,
+      size: 120
+    )
+
+    # Convertir l'image PNG en base64
+    self.qr_code = Base64.encode64(png.to_s)
+    save!
   end
 end
