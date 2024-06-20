@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_06_17_153149) do
+ActiveRecord::Schema[7.0].define(version: 2024_06_20_075735) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -177,6 +177,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_17_153149) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "current_user_id"
+    t.index ["current_user_id"], name: "index_user_contact_groups_on_current_user_id"
+    t.index ["user_id", "current_user_id"], name: "index_user_contact_groups_on_user_and_current_user", unique: true
     t.index ["user_id"], name: "index_user_contact_groups_on_user_id"
   end
 
@@ -236,6 +239,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_17_153149) do
   add_foreign_key "participations", "users"
   add_foreign_key "repertoires", "users"
   add_foreign_key "user_contact_groups", "users"
+  add_foreign_key "user_contact_groups", "users", column: "current_user_id"
   add_foreign_key "user_groups", "contact_groups"
   add_foreign_key "user_groups", "user_contact_groups"
 end

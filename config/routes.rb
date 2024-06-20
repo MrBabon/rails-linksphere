@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     registrations: 'users/registrations'
   }
   resources :users do
+    resources :user_contact_groups, only: :create
     resource :repertoire, only: [] do
       resources :contact_groups, only: [:create, :new, :edit, :show, :destroy, :update] do
         resources :user_contact_groups, only: [:show, :update] do

@@ -3,5 +3,4 @@ class UserContactGroupSerializer
   attributes :id, :personal_note, :user_id
 
   belongs_to :user, serializer: UserSerializer
-
 end

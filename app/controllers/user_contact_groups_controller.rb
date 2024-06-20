@@ -1,5 +1,5 @@
 class UserContactGroupsController < ApplicationController
-    after_action :verify_authorized, except: [:add_user_to_group]
+    after_action :verify_authorized, except: [:create]
 
     def show
         @user = User.find(params[:id])
@@ -32,6 +32,59 @@ class UserContactGroupsController < ApplicationController
         }
     end
 
+    def create
+      Rails.logger.debug("Current user: #{current_user.inspect}")
+      user_to_add = User.find(params[:user_contact_group][:user_id])
+      repertoire = current_user&.repertoire
+      if repertoire.nil?
+        render json: { error: "Repertoire not found" }, status: :not_found
+        return
+      end
+      contact_group = repertoire.contact_groups.find_by(name: 'Everyone')
+
+      if contact_group.nil?
+        render json: { error: "Contact group 'Everyone' not found" }, status: :not_found
+      end
+
+      ActiveRecord::Base.transaction do
+        user_contact_group = UserContactGroup.find_or_initialize_by(
+          user_id: user_to_add.id,
+          current_user_id: current_user.id
+        )
+        authorize user_contact_group
+
+        if user_contact_group.new_record?
+          user_contact_group.save!
+        end
+
+        user_group = UserGroup.find_or_initialize_by(
+          contact_group_id: contact_group.id,
+          user_contact_group_id: user_contact_group.id
+        )
+        authorize user_group
+
+        if user_group.new_record?
+          user_group.save!
+        end
+
+        render json: UserContactGroupSerializer.new(user_contact_group).serializable_hash, status: :created
+      rescue ActiveRecord::RecordInvalid => e
+        render json: { error: e.message }, status: :unprocessable_entity
+      end
+
+    end
+
+    def update
+      @user_contact_group = UserContactGroup.find(params[:id])
+      authorize @user_contact_group
+
+      if @user_contact_group.update(user_contact_group_params)
+        render json: UserContactGroupSerializer.new(@user_contact_group).serializable_hash, status: :ok
+      else
+        render json: @user_contact_group.errors, status: :unprocessable_entity
+      end
+    end
+
     def add_to_group
       user_id = params[:user_contact_group][:user_id]
       group_id = params[:user_contact_group][:contact_group_id]
@@ -53,21 +106,17 @@ class UserContactGroupsController < ApplicationController
       end
     end
 
-    def update
-      @user_contact_group = UserContactGroup.find(params[:id])
-      authorize @user_contact_group
-
-      if @user_contact_group.update(user_contact_group_params)
-        render json: UserContactGroupSerializer.new(@user_contact_group).serializable_hash, status: :ok
-      else
-        render json: @user_contact_group.errors, status: :unprocessable_entity
-      end
-    end
-
     private
 
     def user_contact_group_params
-        params.require(:user_contact_group).permit(:user_id, :contact_group_id)
+        params.require(:user_contact_group).permit(:user_id)
+    end
+
+    def add_user_to_group(user_id, contact_id, group_id)
+      user_contact_group = UserContactGroup.find_or_initialize_by(user_id: user_id)
+      unless UserGroup.exists?(user_contact_group: user_contact_group, contact_group_id: group_id)
+        UserGroup.create(user_contact_group: user_contact_group, contact_group_id: group_id)
+      end
     end
 
 end

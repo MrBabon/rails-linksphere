@@ -1,4 +1,4 @@
-class UserContactGroupPolicy < ApplicationPolicy
+class UserGroupPolicy < ApplicationPolicy
   class Scope < Scope
     # NOTE: Be explicit about which records you allow access to!
     # def resolve
@@ -6,20 +6,8 @@ class UserContactGroupPolicy < ApplicationPolicy
     # end
   end
 
-  def show?
-    true
-  end
-
-  def add_to_group?
-    true
-  end
-
-  def update?
-    true
-  end
-
   def create?
     user.present?
   end
-
+  
 end
