@@ -1,6 +1,8 @@
 class PagesController < ApplicationController
-
+  skip_before_action :authenticate_user!, only: [:home, :redirect]
+  
   def home
+    render json: { message: "Bienvenue dans l'api linksphere !" }
   end
 
   def redirect
