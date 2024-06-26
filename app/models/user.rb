@@ -51,14 +51,16 @@ class User < ApplicationRecord
     end
   end
 
+  before_destroy :destroy_related_records
   # REPERTOIRE
   has_one :repertoire, dependent: :destroy
 
   # CHATROOM & MESSAGE
   has_many :messages, dependent: :destroy
   # USERS_CONTACT_GROUPS
-  has_many :user_contact_groups
-  has_many :contact_groups, through: :user_contact_groups
+  has_many :user_contact_groups, dependent: :destroy
+  has_many :contact_groups, through: :repertoire
+  has_many :user_groups, through: :contact_groups
 
   # PARTICIPATION
   has_many :participations, dependent: :destroy
@@ -133,4 +135,15 @@ class User < ApplicationRecord
     self.qr_code = Base64.encode64(png.to_s)
     save!
   end
+
+  def destroy_related_records
+    self.repertoire.contact_groups.each do |contact_group|
+      contact_group.user_groups.each do |user_group|
+        user_group.destroy
+      end
+      contact_group.destroy
+    end
+    self.repertoire.destroy
+  end
+
 end

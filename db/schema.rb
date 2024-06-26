@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_06_20_075735) do
+ActiveRecord::Schema[7.0].define(version: 2024_06_26_090946) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -238,8 +238,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_20_075735) do
   add_foreign_key "participations", "events"
   add_foreign_key "participations", "users"
   add_foreign_key "repertoires", "users"
-  add_foreign_key "user_contact_groups", "users"
-  add_foreign_key "user_contact_groups", "users", column: "current_user_id"
+  add_foreign_key "user_contact_groups", "users", column: "current_user_id", on_delete: :cascade
+  add_foreign_key "user_contact_groups", "users", on_delete: :cascade
   add_foreign_key "user_groups", "contact_groups"
   add_foreign_key "user_groups", "user_contact_groups"
 end

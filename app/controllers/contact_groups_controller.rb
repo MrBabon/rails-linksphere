@@ -47,7 +47,8 @@ class ContactGroupsController < ApplicationController
       if @contact_group.destroy
         render json: { message: "Contact Group deleted." }, status: :ok
       else
-        render json: { error: "Could not delete Contact Group." }, status: :unprocessable_entity
+        Rails.logger.error @contact_group.errors.full_messages.to_sentence
+        render json: { error: "Could not delete Contact Group: #{@contact_group.errors.full_messages.to_sentence}" }, status: :unprocessable_entity
       end
     end
 
@@ -56,10 +57,10 @@ class ContactGroupsController < ApplicationController
     def set_contact_group
         repertoire = current_user.repertoire
         if repertoire.present?
-        @contact_group = repertoire.contact_groups.find_by(id: params[:id])
-        authorize @contact_group, :show? if @contact_group
+          @contact_group = repertoire.contact_groups.find_by(id: params[:id])
+          authorize @contact_group, :show? if @contact_group
         else
-        @contact_group = nil
+          @contact_group = nil
         end
     end
 
