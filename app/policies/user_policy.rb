@@ -23,4 +23,8 @@ class UserPolicy < ApplicationPolicy
   def show?
     true
   end
+
+  def update_preferences?
+    user == record
+  end
 end

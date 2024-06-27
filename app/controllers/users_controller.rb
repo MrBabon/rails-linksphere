@@ -6,7 +6,7 @@ class UsersController < ApplicationController
     user = current_user
     authorize user
     avatar_url = user.avatar_url # Utilise la méthode pour obtenir l'URL de l'avatar
-  
+
     render json: {
       user: UserSerializer.new(user).serializable_hash[:data][:attributes],
       avatar_url: avatar_url
@@ -16,7 +16,7 @@ class UsersController < ApplicationController
   def repertoire
     repertoire = current_user.repertoire
     authorize repertoire
-    
+
     @groups = repertoire.contact_groups.includes(user_contact_groups: :user)
     @everyone_group = @groups.find_by(name: "Everyone")
     if params[:search].present?
@@ -100,10 +100,24 @@ class UsersController < ApplicationController
   render json: { error: "User not found." }, status: :not_found
   end
 
-  private 
+  def update_preferences
+    authorize current_user
+    preferences = preferences_params
+    if current_user.update(preferences)
+      render json: UserSerializer.new(current_user).serializable_hash, status: :ok
+    else
+      render json: { error: current_user.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  private
 
   def set_user
     @user = User.find(params[:id])
+  end
+
+  def preferences_params
+    params.require(:user).permit(:push_notifications, :messages_from_contacts, :messages_from_everyone)
   end
 
 end

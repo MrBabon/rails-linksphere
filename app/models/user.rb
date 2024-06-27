@@ -15,6 +15,7 @@ class User < ApplicationRecord
   validates :last_name, presence: true, length: { maximum: 20 }, format: { without: /\s/ }
   validates :phone, phone: { message: I18n.t('errors.messages.invalid_phone_number') }
   validates :biography, length: { maximum: 1000 }
+  validates :push_notifications, :messages_from_contacts, :messages_from_everyone, inclusion: { in: [true, false] }
 
   enum industry: {
     agriculture: "Agriculture",

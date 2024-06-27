@@ -26,6 +26,7 @@ Rails.application.routes.draw do
       get 'profil'
       get 'repertoire'
       get 'my_events'
+      patch 'update_preferences'
     end
   end
 
