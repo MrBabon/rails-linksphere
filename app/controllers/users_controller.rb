@@ -3,6 +3,7 @@ class UsersController < ApplicationController
   before_action :authenticate_user!
 
   def profil
+
     user = current_user
     authorize user
     avatar_url = user.avatar_url # Utilise la méthode pour obtenir l'URL de l'avatar

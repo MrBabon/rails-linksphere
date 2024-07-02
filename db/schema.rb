@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_06_27_074423) do
+ActiveRecord::Schema[7.0].define(version: 2024_07_02_152222) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -87,6 +87,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_27_074423) do
     t.datetime "updated_at", null: false
     t.index ["entreprise_id"], name: "index_entrepreneurs_on_entreprise_id"
     t.index ["user_id"], name: "index_entrepreneurs_on_user_id"
+  end
+
+  create_table "entreprise_contact_groups", force: :cascade do |t|
+    t.bigint "repertoire_id", null: false
+    t.bigint "entreprise_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["entreprise_id"], name: "index_entreprise_contact_groups_on_entreprise_id"
+    t.index ["repertoire_id"], name: "index_entreprise_contact_groups_on_repertoire_id"
   end
 
   create_table "entreprises", force: :cascade do |t|
@@ -233,6 +242,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_27_074423) do
   add_foreign_key "employees", "users"
   add_foreign_key "entrepreneurs", "entreprises"
   add_foreign_key "entrepreneurs", "users"
+  add_foreign_key "entreprise_contact_groups", "entreprises"
+  add_foreign_key "entreprise_contact_groups", "repertoires"
   add_foreign_key "events", "entreprises"
   add_foreign_key "exhibitors", "entreprises"
   add_foreign_key "exhibitors", "events"

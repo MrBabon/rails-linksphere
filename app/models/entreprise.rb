@@ -9,6 +9,9 @@ class Entreprise < ApplicationRecord
     has_many :events, dependent: :destroy
     # EXHIBITOR
     has_many :exhibitors, dependent: :destroy
+    # ENTREPRISE CONTACT GROUP
+    has_many :entreprise_contact_groups, dependent: :destroy
+    has_many :repertoires, through: :entreprise_contact_groups
 
 
 
