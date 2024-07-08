@@ -36,6 +36,25 @@ class UsersController < ApplicationController
     }, status: :ok
   end
 
+  def entreprise_contact
+    repertoire = current_user.repertoire
+    authorize current_user, :entreprise_contact?
+    
+    if params[:search].present?
+      search = params[:search]
+      entreprises = Entreprise.search_by_name(search).joins(:entreprise_contact_groups).where(entreprise_contact_groups: { repertoire_id: repertoire.id })
+      @search_active = true
+    else
+      entreprises = repertoire.entreprises
+      @search_active = false
+    end
+
+    render json: {
+      entreprises: EntrepriseSerializer.new(entreprises, is_collection: true).serializable_hash[:data],
+      search_active: @search_active
+    }, status: :ok
+  end
+
   def my_events
     user = current_user
     authorize user

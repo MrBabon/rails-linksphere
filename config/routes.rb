@@ -25,6 +25,7 @@ Rails.application.routes.draw do
     member do
       get 'profil'
       get 'repertoire'
+      get 'entreprise_contact'
       get 'my_events'
       patch 'update_preferences'
     end
@@ -43,7 +44,9 @@ Rails.application.routes.draw do
   end
 
   resources :entreprises, only: [:edit, :update, :show, :new, :create] do
-
+    member do
+      post 'add_to_repertoire'
+    end
   end
 
 

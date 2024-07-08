@@ -13,7 +13,11 @@ class Entreprise < ApplicationRecord
     has_many :entreprise_contact_groups, dependent: :destroy
     has_many :repertoires, through: :entreprise_contact_groups
 
-
+    # PG SEARCH
+    include PgSearch::Model
+    pg_search_scope :search_by_name,
+                    against: [:name],
+                    using: { tsearch: { prefix: true } }
 
     has_one_attached :logo
     def logo_url

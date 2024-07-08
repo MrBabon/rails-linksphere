@@ -27,4 +27,9 @@ class UserPolicy < ApplicationPolicy
   def update_preferences?
     user == record
   end
+
+  def entreprise_contact?
+    show?
+  end
+
 end
