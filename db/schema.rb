@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_07_02_152222) do
+ActiveRecord::Schema[7.0].define(version: 2024_07_10_072424) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -59,6 +59,19 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_02_152222) do
     t.datetime "updated_at", null: false
     t.index ["user1_id"], name: "index_chatrooms_on_user1_id"
     t.index ["user2_id"], name: "index_chatrooms_on_user2_id"
+  end
+
+  create_table "contact_entreprises", force: :cascade do |t|
+    t.string "category"
+    t.text "message"
+    t.bigint "user_id", null: false
+    t.bigint "event_id", null: false
+    t.bigint "entreprise_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["entreprise_id"], name: "index_contact_entreprises_on_entreprise_id"
+    t.index ["event_id"], name: "index_contact_entreprises_on_event_id"
+    t.index ["user_id"], name: "index_contact_entreprises_on_user_id"
   end
 
   create_table "contact_groups", force: :cascade do |t|
@@ -237,6 +250,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_02_152222) do
   add_foreign_key "blocks", "users", column: "blocker_id"
   add_foreign_key "chatrooms", "users", column: "user1_id"
   add_foreign_key "chatrooms", "users", column: "user2_id"
+  add_foreign_key "contact_entreprises", "entreprises"
+  add_foreign_key "contact_entreprises", "events"
+  add_foreign_key "contact_entreprises", "users"
   add_foreign_key "contact_groups", "repertoires"
   add_foreign_key "employees", "entreprises"
   add_foreign_key "employees", "users"
