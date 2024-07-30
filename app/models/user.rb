@@ -2,6 +2,9 @@ class User < ApplicationRecord
   after_create :create_default_repertoire
   after_create :generate_qr_code
 
+  before_destroy :log_before_destroy
+  after_destroy :log_after_destroy
+
   include Devise::JWT::RevocationStrategies::JTIMatcher
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
@@ -145,6 +148,14 @@ class User < ApplicationRecord
       contact_group.destroy
     end
     self.repertoire.destroy
+  end
+
+  def log_before_destroy
+    Rails.logger.debug "Before destroy: #{self.inspect}"
+  end
+
+  def log_after_destroy
+    Rails.logger.debug "After destroy: #{self.inspect}"
   end
 
 end

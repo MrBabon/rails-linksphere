@@ -44,6 +44,7 @@ Rails.application.routes.draw do
   end
 
   resources :entreprises, only: [:edit, :update, :show, :new, :create] do
+    resources :contact_entreprises, only: [:create]
     member do
       post 'add_to_repertoire'
     end

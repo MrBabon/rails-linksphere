@@ -7,6 +7,21 @@ class Users::RegistrationsController < Devise::RegistrationsController
   before_action :configure_permitted_parameters, only: [:update]
   before_action :configure_account_update_params, only: [:update]
 
+  def destroy
+    resource = current_user
+    if resource.destroy
+      # Supprimer les informations de session ici, si nécessaire
+      Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name)
+      render json: {
+        status: { code: 200, message: 'Account deleted successfully.' }
+      }, status: :ok
+    else
+      render json: {
+        status: { code: 422, message: "User couldn't be deleted successfully #{resource.errors.full_messages.to_sentence}" }
+      }, status: :unprocessable_entity
+    end
+  end
+
   # GET /resource/sign_up
   # def new
   #   super
@@ -46,6 +61,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # def cancel
   #   super
   # end
+
 
   protected
 
