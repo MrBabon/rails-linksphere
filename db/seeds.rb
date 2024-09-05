@@ -56,8 +56,8 @@ agriculture = Event.create(
     country: "France",
     link: "www.cannesticket.com/fr",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    start_time: "2024-09-05",
-    end_time: "2024-09-07",
+    start_time: "2025-09-05",
+    end_time: "2025-09-07",
     registration_code: "QWERTY",
     entreprise: organisateur
 )
@@ -71,8 +71,8 @@ play = Event.create(
     country: "France",
     link: "www.cannesticket.com/fr",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    start_time: "2024-08-23",
-    end_time: "2024-08-25",
+    start_time: "2025-06-23",
+    end_time: "2025-06-25",
     registration_code: "QWERTY",
     entreprise: organisateur
 )
