@@ -31,8 +31,11 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :chatrooms, only: [:show, :index, :create, :destroy] do
+    resources :messages, only: :create
+  end
 
-
+  resources :blocks, only: [:create, :destroy]
 
   resources :events, only: [:index, :show] do
     member do
