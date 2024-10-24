@@ -4,25 +4,46 @@ class ChatroomsController < ApplicationController
   def show
     authorize @chatroom
     if @chatroom
-      render json: ChatroomSerializer.new(@chatroom).serializable_hash, status: :ok
+      render json: ChatroomSerializer.new(@chatroom, include: [:user1, :user2]).serializable_hash, status: :ok
     else
       render json: { error: "The conversation has been deleted or does not exist." }, status: :not_found
     end
   end
 
   def index
-    @chatrooms = policy_scope(Chatroom).where("user1_id = ? OR user2_id = ?", current_user.id, current_user.id)
-    user_ids = @chatrooms.flat_map { |chatroom| [chatroom.user1_id, chatroom.user2_id] }.uniq - [current_user.id]
+    # Récupérer toutes les chatrooms où l'utilisateur est impliqué
+    @chatrooms = Chatroom.where("user1_id = ? OR user2_id = ?", current_user.id, current_user.id)
+
 
     if params[:search].present?
-      @users = User.search_by_name(params[:search]).where(id: user_ids)
+      # Rechercher parmi les utilisateurs (other_user) liés à une chatroom avec current_user
+      filtered_chatrooms = @chatrooms.select do |chatroom|
+        other_user = chatroom.other_user(current_user)
+        other_user.first_name.downcase.include?(params[:search].downcase) || other_user.last_name.downcase.include?(params[:search].downcase)
+      end
+
+      # Si des utilisateurs correspondent à la recherche, récupérer leurs infos
+      @users = filtered_chatrooms.map { |chatroom| chatroom.other_user(current_user) }
+
+      @search_active = true
     else
-      @users = User.where(id: user_ids)
+      filtered_chatrooms = @chatrooms
+      @users = [] # Si pas de recherche, pas besoin de renvoyer d'utilisateurs
+      @search_active = false
     end
 
+    # Récupérer le dernier message pour chaque chatroom
+    @last_messages = filtered_chatrooms.map do |chatroom|
+      last_message = chatroom.messages.order(created_at: :desc).first
+      { chatroom_id: chatroom.id, message: last_message }
+    end
+
+    # Renvoyer les chatrooms, les utilisateurs trouvés et l'état de la recherche
     render json: {
-      chatrooms: ChatroomSerializer.new(@chatrooms).serializable_hash,
-      users: UserSerializer.new(@users).serializable_hash
+      chatrooms: ChatroomSerializer.new(filtered_chatrooms, { params: { current_user: current_user }, include: [:user1, :user2] }).serializable_hash,
+      last_messages: @last_messages,
+      users: UserSerializer.new(@users, is_collection: true).serializable_hash[:data], # Renvoyer les utilisateurs correspondant à la recherche
+      search_active: @search_active
     }, status: :ok
   end
 

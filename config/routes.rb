@@ -13,6 +13,9 @@ Rails.application.routes.draw do
   }
   resources :users do
     resources :user_contact_groups, only: :create
+    resources :chatrooms, only: [:show, :index, :create, :destroy] do
+      resources :messages, only: :create
+    end
     resource :repertoire, only: [] do
       resources :contact_groups, only: [:create, :new, :edit, :show, :destroy, :update] do
         resources :user_contact_groups, only: [:show, :update] do
@@ -31,9 +34,6 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :chatrooms, only: [:show, :index, :create, :destroy] do
-    resources :messages, only: :create
-  end
 
   resources :blocks, only: [:create, :destroy]
 
