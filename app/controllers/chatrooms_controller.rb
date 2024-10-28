@@ -4,7 +4,7 @@ class ChatroomsController < ApplicationController
   def show
     authorize @chatroom
     if @chatroom
-      render json: ChatroomSerializer.new(@chatroom, include: [:user1, :user2]).serializable_hash, status: :ok
+      render json: ChatroomSerializer.new(@chatroom, include: [:user1, :user2, :messages]).serializable_hash, status: :ok
     else
       render json: { error: "The conversation has been deleted or does not exist." }, status: :not_found
     end

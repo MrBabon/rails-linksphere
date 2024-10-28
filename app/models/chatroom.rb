@@ -1,7 +1,7 @@
 class Chatroom < ApplicationRecord
     belongs_to :user1, class_name: 'User', foreign_key: 'user1_id'
     belongs_to :user2, class_name: 'User', foreign_key: 'user2_id'
-    has_many :messages, dependent: :destroy
+    has_many :messages, -> { order(created_at: :asc) }, dependent: :destroy
 
     validates :user1_id, uniqueness: { scope: :user2_id, message: "Chatroom already exists between these users" }
     validate :users_must_be_different
